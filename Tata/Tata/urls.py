@@ -19,7 +19,7 @@ from ipl.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('ipl/',include('ipl.urls'))
+    path('users/',include('ipl.urls'))
    
 
 ]
