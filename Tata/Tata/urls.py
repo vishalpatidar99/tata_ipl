@@ -20,6 +20,4 @@ from ipl.views import *
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('users/',include('ipl.urls'))
-   
-
 ]

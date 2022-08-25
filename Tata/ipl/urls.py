@@ -7,6 +7,7 @@ urlpatterns = [
     
     path('',user_list),
     path('<int:id>',user_details,name='user_details'),
+    path('schedule/',schedule,name='scheduel'),
 
 
    
