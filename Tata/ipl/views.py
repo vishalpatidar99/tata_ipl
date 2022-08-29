@@ -23,8 +23,9 @@ def user_list(request):
 def schedule(request):
     return render(request,'schedule.html',{})
 def user_details(request,id):
-    # return render(request,'user_details.html',{'user ':User.objects.filter(id=id).first()})
-    # import pdb;pdb.set_trace()
+    '''
+    user detail based on id
+    '''
     user = User.objects.filter(id=id).values()
     data = []
     dic={}
@@ -38,18 +39,22 @@ def user_details(request,id):
     return HttpResponse(data)
 
 class SearchUserView(generics.ListCreateAPIView):
+    '''
+    search a user
+    '''
     search_fields = ['first_name']
     filter_backends = (filters.SearchFilter,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 class SendMeetingRequest(APIView):
+    '''
+    send a meeting request
+    '''
     def post(self,request):
         host_id = request.POST.get("host_id")
         user_id = request.POST.get("user_id")
         aval =  request.POST.get("availability")
-        # import pdb;pdb.set_trace()
-
         from_time = request.POST.get("from time")
         ft = datetime.strptime(from_time,'%Y-%m-%d %H:%M:%S').date()   
         to_time = request.POST.get("to time")
@@ -63,6 +68,9 @@ class SendMeetingRequest(APIView):
             return JsonResponse({"msg":"Only today's date is allowed."})
 
 class AllMeetingRequest(APIView):
+    '''
+    when a user logs in all meeting request appears.
+    '''
     def get(self,request,id):
         user_id=User.objects.filter(id=id).first().id
         if MeetingRequest.objects.filter(meeting_host=user_id) or MeetingRequest.objects.filter(meeting_attender=user_id):
@@ -72,10 +80,12 @@ class AllMeetingRequest(APIView):
             return JsonResponse({"msg":"No meetings"})
 
 class MeetingResponseView(APIView):
+    '''
+    user respond to a meeting request notification when logs in.
+    '''
     def post(self,request):
         user= request.POST.get("user")
         aval=request.POST.get("availability",None)
-        import pdb;pdb.set_trace()
         request_id=request.POST.get("request_id")
         user = User.objects.filter(id=user).first()
         request_id=MeetingRequest.objects.filter(id=request_id).first()
@@ -87,6 +97,10 @@ class MeetingResponseView(APIView):
             return JsonResponse({"msg":"Meeting request is rejected."})
 
 class ArrangeMeeting(APIView):
+    '''
+    view to a arrange a meeting for an available user.
+    '''
+
     def post(self,request):
         host_id=request.POST.get("host_id")
         attender_id = request.POST.get("attender_id")
@@ -106,6 +120,5 @@ class ArrangeMeeting(APIView):
             else:
                 return JsonResponse({"msg":"Enter today's date."})
 
-# class AllPastMeetings()
 
 
